@@ -3,6 +3,7 @@ trait IMainTrait<TContractState> {
     fn start_game(ref self: TContractState);
     fn points_up(ref self: TContractState);
     fn points_down(ref self: TContractState);
+    fn gamble(ref self: TContractState);
     fn flip(ref self: TContractState);
 }
 
@@ -17,9 +18,12 @@ mod main {
     use tenpercent::store::{Store, StoreTrait};
     use tenpercent::models::coin::Coin;
     use tenpercent::models::points::{Points, PointsTrait};
+    use tenpercent::models::dice::{Dice, DiceTrait};
 
     const ULTIMATE_COIN: felt252 = 'ultimate_coin';
     const DECIMAL_MULTIPLIER: u256 = 1_000_000;
+    const DICE_SEED: felt252 = 'PREDICTABLY_RANDOM';
+    const DICE_KEY: u8 = 2;
 
     #[storage]
     struct Storage {}
@@ -36,6 +40,9 @@ mod main {
 
         let points = PointsTrait::start_supply();
         store.write_points(@points);
+
+        let dice = DiceTrait::new(DICE_KEY, DICE_SEED);
+        store.write_dice(@dice);
     }
 
     #[abi(embed_v0)]
@@ -52,6 +59,13 @@ mod main {
             let mut caller_points = PointsTrait::new(caller);
             caller_points.add(points);
             store.write_points(@caller_points);
+        }
+
+        fn gamble(ref self: ContractState) {
+            let mut store = StoreTrait::new(self.world_storage());
+            let mut dice = store.read_dice(DICE_KEY);
+            dice.roll();
+            store.write_dice(@dice);
         }
 
         fn points_up(ref self: ContractState) {
