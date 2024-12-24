@@ -1,10 +1,8 @@
 #[starknet::interface]
 trait IMainTrait<TContractState> {
     fn start_game(ref self: TContractState);
-    fn points_up(ref self: TContractState);
-    fn points_down(ref self: TContractState);
     fn gamble(ref self: TContractState, guess: bool);
-    fn flip(ref self: TContractState);
+    fn reset_game(ref self: TContractState);
 }
 
 
@@ -38,26 +36,43 @@ mod main {
         let coin = Coin { id: ULTIMATE_COIN, flip: false };
         store.write_coin(@coin);
 
-        let points = PointsTrait::start_supply();
-        store.write_points(@points);
-
         let dice = DiceTrait::new(DICE_KEY, DICE_SEED);
         store.write_dice(@dice);
+
+        let points = PointsTrait::start_supply();
+        store.write_points(@points);
     }
 
     #[abi(embed_v0)]
     impl MainImpl of IMainTrait<ContractState> {
         fn start_game(ref self: ContractState) {
             let mut store = StoreTrait::new(self.world_storage());
+
+            let caller = get_caller_address();
+            let mut caller_points = store.read_points(caller);
+            assert!(caller_points.balance == 0, "You already started the game");
+
             let points = 100 * DECIMAL_MULTIPLIER;
 
             let mut supply = store.read_points(Zero::<ContractAddress>::zero());
             supply.subtract(points);
             store.write_points(@supply);
 
-            let caller = get_caller_address();
-            let mut caller_points = PointsTrait::new(caller);
             caller_points.add(points);
+            store.write_points(@caller_points);
+        }
+
+        fn reset_game(ref self: ContractState) {
+            let mut store = StoreTrait::new(self.world_storage());
+
+            let mut caller_points = store.read_points(get_caller_address());
+            let refunded_points = caller_points.balance;
+
+            let mut supply = store.read_points(Zero::<ContractAddress>::zero());
+            supply.add(refunded_points);
+            store.write_points(@supply);
+
+            caller_points.subtract(refunded_points);
             store.write_points(@caller_points);
         }
 
@@ -74,39 +89,6 @@ mod main {
             }
 
             store.write_dice(@dice);
-        }
-
-        fn points_up(ref self: ContractState) {
-            let mut store = StoreTrait::new(self.world_storage());
-            let points = 100 * DECIMAL_MULTIPLIER;
-
-            let mut supply = store.read_points(Zero::<ContractAddress>::zero());
-            supply.subtract(points);
-            store.write_points(@supply);
-
-            let mut caller_points = store.read_points(get_caller_address());
-            caller_points.add(points);
-            store.write_points(@caller_points);
-        }
-
-        fn points_down(ref self: ContractState) {
-            let mut store = StoreTrait::new(self.world_storage());
-            let points = 100 * DECIMAL_MULTIPLIER;
-
-            let mut supply = store.read_points(Zero::<ContractAddress>::zero());
-            supply.add(points);
-            store.write_points(@supply);
-
-            let mut caller_points = store.read_points(get_caller_address());
-            caller_points.subtract(points);
-            store.write_points(@caller_points);
-        }
-
-        fn flip(ref self: ContractState) {
-            let mut store = StoreTrait::new(self.world_storage());
-            let mut coin = store.read_coin(ULTIMATE_COIN);
-            coin.flip = !coin.flip;
-            store.write_coin(@coin);
         }
     }
 

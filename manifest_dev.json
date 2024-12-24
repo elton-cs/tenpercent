@@ -1252,8 +1252,8 @@
   },
   "contracts": [
     {
-      "address": "0x486fcaef6820a316a0d6e22316a97c96e11abb885745fd5bcdfef6f5827c741",
-      "class_hash": "0x4770a3b242c0eb89faee6c832d7b7050b2105f466bbeac8f9684f2361242f38",
+      "address": "0x5fe3cd9b8a92c16fee81e08579cc87c1328aa9a375b7d1f472ee183af4e12b8",
+      "class_hash": "0x627108010d755aa8322dbe15e8b79d7c81b467db303a1ac2141cd816e1e940f",
       "abi": [
         {
           "type": "impl",
@@ -1344,20 +1344,6 @@
             },
             {
               "type": "function",
-              "name": "points_up",
-              "inputs": [],
-              "outputs": [],
-              "state_mutability": "external"
-            },
-            {
-              "type": "function",
-              "name": "points_down",
-              "inputs": [],
-              "outputs": [],
-              "state_mutability": "external"
-            },
-            {
-              "type": "function",
               "name": "gamble",
               "inputs": [
                 {
@@ -1370,7 +1356,7 @@
             },
             {
               "type": "function",
-              "name": "flip",
+              "name": "reset_game",
               "inputs": [],
               "outputs": [],
               "state_mutability": "external"
@@ -1490,10 +1476,8 @@
       "selector": "0x9aae2d1f7774dee297354a1268ddb121d42dc65b61c3277870823baf7342c",
       "systems": [
         "start_game",
-        "points_up",
-        "points_down",
         "gamble",
-        "flip",
+        "reset_game",
         "upgrade"
       ]
     }
