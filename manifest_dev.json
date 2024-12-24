@@ -1252,8 +1252,8 @@
   },
   "contracts": [
     {
-      "address": "0x7bacaf5a8ad7f098f75887bfda7d5b0841341ab2404eccf680efe6461b6e16e",
-      "class_hash": "0x64c20cefe90422f9cd57510510c4d9a65facf2fe4e6c210338649118673270c",
+      "address": "0x192e67cd2b6997217fef2b90c4c4367a8a257cf34bf483b39b1fe3c014b0a09",
+      "class_hash": "0x6195a3f7cf995242ea44c75bcc16db247b1a3a96bf223b3566f211671ae1333",
       "abi": [
         {
           "type": "impl",
@@ -1321,6 +1321,27 @@
           "type": "interface",
           "name": "tenpercent::systems::main::IMainTrait",
           "items": [
+            {
+              "type": "function",
+              "name": "start_game",
+              "inputs": [],
+              "outputs": [],
+              "state_mutability": "external"
+            },
+            {
+              "type": "function",
+              "name": "points_up",
+              "inputs": [],
+              "outputs": [],
+              "state_mutability": "external"
+            },
+            {
+              "type": "function",
+              "name": "points_down",
+              "inputs": [],
+              "outputs": [],
+              "state_mutability": "external"
+            },
             {
               "type": "function",
               "name": "flip",
@@ -1442,6 +1463,9 @@
       "tag": "tenpercent-main",
       "selector": "0x9aae2d1f7774dee297354a1268ddb121d42dc65b61c3277870823baf7342c",
       "systems": [
+        "start_game",
+        "points_up",
+        "points_down",
         "flip",
         "upgrade"
       ]
@@ -1453,6 +1477,12 @@
       "class_hash": "0x3b661dd4011d08dcd4d0b016c6dc8641d7b9229daef7b5029bd58aea1cef4fe",
       "tag": "tenpercent-Coin",
       "selector": "0x6386373a84ae6c40d17d356f67391496ce2c4e236bc3f7ab83b987ddfabf81f"
+    },
+    {
+      "members": [],
+      "class_hash": "0x17092491d68230718ae60d5cb6939c047b249a0ea7a51df3a9a1cd2129664db",
+      "tag": "tenpercent-Points",
+      "selector": "0x88c8920609d47cc25a52d271d586c3f87ae0e6aaa2f119205234de25e1516a"
     }
   ],
   "events": []

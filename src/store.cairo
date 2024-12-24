@@ -3,7 +3,7 @@ use dojo::model::ModelStorage;
 use starknet::ContractAddress;
 
 use tenpercent::models::coin::Coin;
-
+use tenpercent::models::points::Points;
 
 #[derive(Copy, Drop)]
 struct Store {
@@ -25,5 +25,15 @@ impl StoreImpl of StoreTrait {
     #[inline]
     fn write_coin(ref self: Store, coin: @Coin) {
         self.world.write_model(coin)
+    }
+
+    #[inline]
+    fn read_points(self: @Store, owner: ContractAddress) -> Points {
+        self.world.read_model(owner)
+    }
+
+    #[inline]
+    fn write_points(ref self: Store, points: @Points) {
+        self.world.write_model(points)
     }
 }
