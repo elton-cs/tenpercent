@@ -19,12 +19,14 @@ impl DiceImpl of DiceTrait {
     }
 
     #[inline(always)]
-    fn roll(ref self: Dice) {
+    fn roll(ref self: Dice) -> u8 {
         let mut state = PoseidonTrait::new();
         state = state.update(self.seed);
         state = state.update(self.nonce);
         self.nonce += 1;
         let random: u256 = state.finalize().into();
         self.roll = (random % self.face_count.into() + 1).try_into().unwrap();
+
+        self.roll
     }
 }

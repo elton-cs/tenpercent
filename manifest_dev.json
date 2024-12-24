@@ -1252,8 +1252,8 @@
   },
   "contracts": [
     {
-      "address": "0x5b51073588dc7a4c344068c00ca5fe0419e56ed388af7afdbbd71a8075e6a1d",
-      "class_hash": "0x47c7d3e40414d2401116858205541aa501170bd1dc4a6ede0932a1638f18939",
+      "address": "0x486fcaef6820a316a0d6e22316a97c96e11abb885745fd5bcdfef6f5827c741",
+      "class_hash": "0x4770a3b242c0eb89faee6c832d7b7050b2105f466bbeac8f9684f2361242f38",
       "abi": [
         {
           "type": "impl",
@@ -1318,6 +1318,20 @@
           "interface_name": "tenpercent::systems::main::IMainTrait"
         },
         {
+          "type": "enum",
+          "name": "core::bool",
+          "variants": [
+            {
+              "name": "False",
+              "type": "()"
+            },
+            {
+              "name": "True",
+              "type": "()"
+            }
+          ]
+        },
+        {
           "type": "interface",
           "name": "tenpercent::systems::main::IMainTrait",
           "items": [
@@ -1345,7 +1359,12 @@
             {
               "type": "function",
               "name": "gamble",
-              "inputs": [],
+              "inputs": [
+                {
+                  "name": "guess",
+                  "type": "core::bool"
+                }
+              ],
               "outputs": [],
               "state_mutability": "external"
             },

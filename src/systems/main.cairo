@@ -3,7 +3,7 @@ trait IMainTrait<TContractState> {
     fn start_game(ref self: TContractState);
     fn points_up(ref self: TContractState);
     fn points_down(ref self: TContractState);
-    fn gamble(ref self: TContractState);
+    fn gamble(ref self: TContractState, guess: bool);
     fn flip(ref self: TContractState);
 }
 
@@ -61,10 +61,18 @@ mod main {
             store.write_points(@caller_points);
         }
 
-        fn gamble(ref self: ContractState) {
+        fn gamble(ref self: ContractState, guess: bool) {
             let mut store = StoreTrait::new(self.world_storage());
             let mut dice = store.read_dice(DICE_KEY);
-            dice.roll();
+            let roll = dice.roll();
+            let roll_bool = roll == 1;
+
+            if guess == roll_bool {
+                TenPercentTrait::up_ten_percent(ref self);
+            } else {
+                TenPercentTrait::down_ten_percent(ref self);
+            }
+
             store.write_dice(@dice);
         }
 
@@ -99,6 +107,39 @@ mod main {
             let mut coin = store.read_coin(ULTIMATE_COIN);
             coin.flip = !coin.flip;
             store.write_coin(@coin);
+        }
+    }
+
+    #[generate_trait]
+    impl TenPercentImpl of TenPercentTrait {
+        #[inline]
+        fn up_ten_percent(ref self: ContractState) {
+            let mut store = StoreTrait::new(self.world_storage());
+
+            let mut supply = store.read_points(Zero::<ContractAddress>::zero());
+            let mut caller_points = store.read_points(get_caller_address());
+            let ten_percent = caller_points.balance / 10;
+
+            caller_points.add(ten_percent);
+            supply.subtract(ten_percent);
+
+            store.write_points(@caller_points);
+            store.write_points(@supply);
+        }
+
+        #[inline]
+        fn down_ten_percent(ref self: ContractState) {
+            let mut store = StoreTrait::new(self.world_storage());
+
+            let mut supply = store.read_points(Zero::<ContractAddress>::zero());
+            let mut caller_points = store.read_points(get_caller_address());
+            let ten_percent = caller_points.balance / 10;
+
+            caller_points.subtract(ten_percent);
+            supply.add(ten_percent);
+
+            store.write_points(@caller_points);
+            store.write_points(@supply);
         }
     }
 
